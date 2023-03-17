@@ -17,20 +17,40 @@ jobs:
       uses: actions/checkout@v3
       with: 
         fetch-depth: 0
+        
+    
+    - name: Git semantic Versioning (Plugin)
+      uses: paulhatch/semantic-version@v4.0.2
+      with:
+        # The prefix to use to identify tags
+        tag_prefix: "v"
+        # A string which, if present in a git commit, indicates that a change represents a
+        # major (breaking) change, supports regular expressions wrapped with '/'
+        major_pattern: "major:"
+        # Same as above except indicating a minor change, supports regular expressions wrapped with '/'
+        minor_pattern: "feat:"
+        # A string to determine the format of the version output
+        format: "${major}.${minor}.${patch}-prerelease${increment}"
+      id: version
+
     - name: Docker Login
       env:
         DOCKER_USER: ${{secrets.DOCKER_USER}}
         DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
+        # get it from git semantic versioning
+        NEW_VERSION: ${{steps.version.outputs.version}}
       run: |
         docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+        echo "New Version: $NEW_VERSION"
+        
     
-    - name: Build docker image
-      run: |
-        docker build -t g00zg00z/docker-graphql-curso:1.0.2 .
-        docker build -t g00zg00z/docker-graphql-curso:latest .
+#     - name: Build docker image
+#       run: |
+#         docker build -t g00zg00z/docker-graphql-curso:1.0.2 .
+#         docker build -t g00zg00z/docker-graphql-curso:latest .
       
-    - name: Push docker image
-      run: |
-        docker push g00zg00z/docker-graphql-curso:1.0.2 
-        docker push g00zg00z/docker-graphql-curso:latest 
+#     - name: Push docker image
+#       run: |
+#         docker push g00zg00z/docker-graphql-curso:1.0.2 
+#         docker push g00zg00z/docker-graphql-curso:latest 
         

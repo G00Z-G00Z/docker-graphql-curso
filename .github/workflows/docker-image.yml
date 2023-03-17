@@ -37,20 +37,23 @@ jobs:
       env:
         DOCKER_USER: ${{secrets.DOCKER_USER}}
         DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
-        # get it from git semantic versioning
-        NEW_VERSION: ${{steps.version.outputs.version}}
       run: |
         docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
         echo "New Version: $NEW_VERSION"
         
     
-#     - name: Build docker image
-#       run: |
-#         docker build -t g00zg00z/docker-graphql-curso:1.0.2 .
-#         docker build -t g00zg00z/docker-graphql-curso:latest .
+    - name: Build docker image
+      env:
+        # get it from git semantic versioning
+        NEW_VERSION: ${{steps.version.outputs.version}}
+      run: |
+        docker build -t g00zg00z/docker-graphql-curso:$NEW_VERSION .
+        docker build -t g00zg00z/docker-graphql-curso:latest .
       
-#     - name: Push docker image
-#       run: |
-#         docker push g00zg00z/docker-graphql-curso:1.0.2 
-#         docker push g00zg00z/docker-graphql-curso:latest 
+    - name: Push docker image
+      env:
+        NEW_VERSION: ${{steps.version.outputs.version}}
+      run: |
+        docker push g00zg00z/docker-graphql-curso:$NEW_VERSION 
+        docker push g00zg00z/docker-graphql-curso:latest 
         

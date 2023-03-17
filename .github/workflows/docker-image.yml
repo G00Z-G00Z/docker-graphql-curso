@@ -30,5 +30,5 @@ jobs:
       
     - name: Push docker image
       run: |
-        docker push g00zg00z/docker-graphql-curso:1.0.2 .
+        docker push g00zg00z/docker-graphql-curso:1.0.2 
         
